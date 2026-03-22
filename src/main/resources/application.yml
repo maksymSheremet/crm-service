@@ -1,0 +1,96 @@
+# ============================================================
+# application.yml ? ?????? ???????????? crm-service
+# ============================================================
+server:
+  port: 8082  # auth=8080, user=8081, gateway=8085
+
+spring:
+  application:
+    name: crm-service
+
+  # ==================== DataSource ====================
+  datasource:
+    # ???? 5435: auth=5433, user=5434, crm=5435
+    url: ${DB_URL:jdbc:postgresql://localhost:5435/crmdb}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+
+  # ==================== JPA ====================
+  jpa:
+    hibernate:
+      ddl-auto: validate       # Flyway ????? ?????? ? Hibernate ?????? ???????
+    show-sql: false
+    open-in-view: false        # ?????? false: ????????? N+1 ????? lazy load ? view layer
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          time_zone: UTC
+
+  # ==================== Flyway ====================
+  flyway:
+    enabled: true
+    baseline-on-migrate: false
+    locations: classpath:db/migration
+
+  # ==================== Kafka ====================
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      # JSON ???????????? ??? event payload ??'?????
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      # ???????? ????????: ??? ??????? ????????????? ?????
+      acks: all
+      # ????????????? producer: ??? ?????????? ?????? ??? retry
+      properties:
+        enable.idempotence: true
+
+  # ==================== Spring Cloud ====================
+  cloud:
+    discovery:
+      enabled: false
+
+# ==================== Internal API ====================
+# ???? ??? ??????? user-service /internal API
+internal:
+  api:
+    key: ${INTERNAL_API_KEY}
+
+# ==================== Service URLs ====================
+# HTTP ?????? user-service ??? service-to-service ????????
+services:
+  user-service:
+    url: ${USER_SERVICE_URL:http://localhost:8081}
+
+# ==================== Kafka Topics ====================
+kafka:
+  topic:
+    client-created: client-created-events
+    deal-closed: deal-closed-events
+
+# ==================== Logging ====================
+logging:
+  level:
+    root: INFO
+    my.code.crmservice: INFO
+    org.springframework.kafka: INFO
+
+# ==================== Actuator ====================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true

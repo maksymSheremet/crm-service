@@ -1,0 +1,52 @@
+# ============================================================
+# docker-compose.yml — локальна інфраструктура crm-service
+#
+# Kafka, Zookeeper, Kafka-UI вже запущені в auth-service!
+# crm-service НЕ дублює їх — підключається до тієї ж мережі.
+#
+# Порядок запуску:
+#   1. cd auth-service  && docker-compose up -d  (Kafka + auth-postgres)
+#   2. cd user-service  && docker-compose up -d  (user-postgres)
+#   3. cd crm-service   && docker-compose up -d  (crm-postgres тільки)
+# ============================================================
+
+services:
+
+  # ============================================================
+  # PostgreSQL — власна БД crm-service (Database per Service pattern)
+  # Порт 5435: auth=5433, user=5434, crm=5435
+  # ============================================================
+  crm-postgres:
+    image: postgres:15-alpine
+    container_name: crm-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: crmdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5435:5432"
+    volumes:
+      - crm_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d crmdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - auth-network  # та сама мережа що auth-service і user-service
+
+volumes:
+  crm_postgres_data:
+
+# ============================================================
+# МЕРЕЖА: auth-network — створена auth-service docker-compose.
+# external: true → Docker не створює нову, використовує існуючу.
+#
+# Завдяки цій мережі crm-service може звертатись до:
+#   kafka:29092          — Kafka broker (producer events)
+#   user-service:8081    — Internal API (якщо user-service теж в мережі)
+# ============================================================
+networks:
+  auth-network:
+    external: true

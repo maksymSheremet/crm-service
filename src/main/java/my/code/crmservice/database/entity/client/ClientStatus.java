@@ -1,4 +1,4 @@
-package my.code.crmservice.database.client;
+package my.code.crmservice.database.entity.client;
 
 public enum ClientStatus {
     LEAD,

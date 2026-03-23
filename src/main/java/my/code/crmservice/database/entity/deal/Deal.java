@@ -1,4 +1,4 @@
-package my.code.crmservice.database.deal;
+package my.code.crmservice.database.entity.deal;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,8 +16,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import my.code.crmservice.database.AuditableEntity;
-import my.code.crmservice.database.client.Client;
+import my.code.crmservice.database.entity.AuditableEntity;
+import my.code.crmservice.database.entity.client.Client;
 
 import java.math.BigDecimal;
 import java.time.Instant;

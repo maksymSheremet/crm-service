@@ -1,4 +1,4 @@
-package my.code.crmservice.database;
+package my.code.crmservice.database.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;

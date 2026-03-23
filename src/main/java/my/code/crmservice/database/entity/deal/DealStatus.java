@@ -1,4 +1,4 @@
-package my.code.crmservice.database.deal;
+package my.code.crmservice.database.entity.deal;
 
 public enum DealStatus {
     OPEN,

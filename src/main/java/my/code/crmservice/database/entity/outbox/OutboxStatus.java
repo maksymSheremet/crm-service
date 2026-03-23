@@ -1,4 +1,4 @@
-package my.code.crmservice.database.outbox;
+package my.code.crmservice.database.entity.outbox;
 
 public enum OutboxStatus {
     PENDING,

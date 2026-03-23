@@ -1,4 +1,4 @@
-package my.code.crmservice.database.client;
+package my.code.crmservice.database.entity.client;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,7 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import my.code.crmservice.database.AuditableEntity;
+import my.code.crmservice.database.entity.AuditableEntity;
 
 import java.util.UUID;
 
